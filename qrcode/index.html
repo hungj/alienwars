@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QR Code Reader</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1>QR Code Reader</h1>  
+    <form>
+      <input type="file" onchange="previewFile()" /><br/>
+      <h2>Preview</h2>
+      <div style="height:200px">
+        <img src="" id="preview" height="200" alt="Image preview..." />
+      </div>  
+    </form>
+ 
+    <p>If the image above looks clear, click the decode button.  If not, try again!</p>
+    <button type="button" class="btn btn-primary btn-lg btn-block" id="decode" onclick="decode()">Decode</button> 
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/grid.js"></script>
+    <script type="text/javascript" src="js/version.js"></script>
+    <script type="text/javascript" src="js/detector.js"></script>
+    <script type="text/javascript" src="js/formatinf.js"></script>
+    <script type="text/javascript" src="js/errorlevel.js"></script>
+    <script type="text/javascript" src="js/bitmat.js"></script>
+    <script type="text/javascript" src="js/datablock.js"></script>
+    <script type="text/javascript" src="js/bmparser.js"></script>
+    <script type="text/javascript" src="js/datamask.js"></script>
+    <script type="text/javascript" src="js/rsdecoder.js"></script>
+    <script type="text/javascript" src="js/gf256poly.js"></script>
+    <script type="text/javascript" src="js/gf256.js"></script>
+    <script type="text/javascript" src="js/decoder.js"></script>
+    <script type="text/javascript" src="js/qrcode.js"></script>
+    <script type="text/javascript" src="js/findpat.js"></script>
+    <script type="text/javascript" src="js/alignpat.js"></script>
+    <script type="text/javascript" src="js/databr.js"></script>
+    <script>
+      function read(a) {
+        alert(a);
+        if( (typeof sforce != 'undefined') && (sforce != null) ) {
+          sforce.one.navigateToSObject(a);
+        }
+        else {
+          window.location="/" + a;
+        }        
+      }         
+        
+      $(document).ready(function() {
+            qrcode.callback = read;
+      });
+  
+  
+      function previewFile() {
+        var preview = document.querySelector('#preview');
+        var file    = document.querySelector('input[type=file]').files[0];
+        var reader  = new FileReader();
+       
+        reader.onloadend = function () {
+          preview.src = reader.result;
+        }
+       
+        if (file) {
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "";
+        }
+      }
+ 
+      function decode() {
+        try {
+          var preview=document.querySelector('#preview');
+          qrcode.decode(preview.src);
+        } catch (e) {
+           alert('Error - ' + e);
+        }
+      }
+    </script>
+  </body>
+</html>
