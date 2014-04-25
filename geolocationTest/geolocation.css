@@ -1,0 +1,16 @@
+html, body {
+	height: 100%;
+}
+
+
+#coords {
+    height: 10%;
+    margin: 0px;
+    padding: 0px
+}
+
+#location {
+    height: 90%;
+    margin: 0px;
+    padding: 0px
+}
