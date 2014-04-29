@@ -7,16 +7,34 @@ location.appendChild(img);
 */
 
 
+google.maps.event.addDomListener(window, 'load', function initialize() {
+	var latitude, longitude;
+	navigator.geolocation.getCurrentPosition(function(position) {
+		latitude = position.coords.latitude;
+		longitude = position.coords.longitude;
+		
+  var mapOptions = {
+    zoom: 18,
+    center: new google.maps.LatLng(latitude, longitude)
+  };
+  map = new google.maps.Map(document.getElementById('location'), mapOptions);
+  document.getElementById('coords').innerHTML = latitude + " " + longitude;
+		//initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+	});
+
+});
+
 
 
 var watch = navigator.geolocation.watchPosition(function(position) {
+  //alert('blah');
 	var location = document.getElementById('location');
 	/*https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
 	https://developers.google.com/maps/documentation/javascript/examples/marker-simple*/
 
 	var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
 	var options = {
-		zoom: 4,
+		zoom: 18,
 		center: pos
 	};
 	var map = new google.maps.Map(location, options);
@@ -25,24 +43,7 @@ var watch = navigator.geolocation.watchPosition(function(position) {
 		position: pos,
 		map: map
 	});
-});
-
-google.maps.event.addDomListener(window, 'load', function initialize() {
-	var latitude, longitude;
-	navigator.geolocation.getCurrentPosition(function(position) {
-		latitude = position.coords.latitude;
-		longitude = position.coords.longitude;
-		
-  var mapOptions = {
-    zoom: 8,
-    center: new google.maps.LatLng(latitude, longitude)
-  };
-  map = new google.maps.Map(document.getElementById('location'), mapOptions);
-  document.getElementById('coords').innerHTML = latitude + " " + longitude;
-		//initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-	});
-
-});/*	
+});/*
 var watchID = navigator.geolocation.watchPosition(function(position) {
   do_something(position.coords.latitude, position.coords.longitude);
 });
