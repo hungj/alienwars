@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Asynchronous Loading</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script>
+    if (navigator.geolocation) {
+      console.log('Geolocation is supported!');
+    }
+    else {
+      console.log('Geolocation is not supported for this Browser/OS version yet.');
+    }
+    var map;
+    var coords = [];
+    var count = 1;
+    var fakeCoords = [];
+
+    var options = {
+      enableHighAccuracy: true,
+      timeout: Infinity,
+      maximumAge: 0
+    };
+
+    var watchPosOptions = {
+      enableHighAccuracy: true,
+      timeout: 27000, // may have to shorten the timeout
+      maximumAge: 0
+    }
+
+    function output_coords(pos) {
+      var crd = pos.coords;
+      console.log('Latitude : ' + crd.latitude);
+      console.log('Longitude: ' + crd.longitude);
+      console.log('More or less ' + crd.accuracy + ' meters.')
+    }
+
+    function success(pos) {
+      var crd = pos.coords;
+      var myLatlng = new google.maps.LatLng(crd.latitude, crd.longitude);
+      coords.push(myLatlng);
+      var mapOptions = {
+        zoom: 18,
+        center: myLatlng
+      };
+      output_coords(pos);
+      map = new google.maps.Map(document.getElementById('map-canvas'),
+          mapOptions);
+      var marker = new google.maps.Marker({
+          position: myLatlng,
+          map: map,
+          title:"Hello World!"
+      });
+    }
+
+    function error(err) {
+      console.warn('ERROR(' + err.code + '): ' + err.message);
+    }
+
+    function initialize() {
+      navigator.geolocation.getCurrentPosition(success, error, options);
+      fakeCoords.push(new google.maps.LatLng(37.428500, -122.170076));
+      fakeCoords.push(new google.maps.LatLng(37.428384, -122.169798));
+      fakeCoords.push(new google.maps.LatLng(37.427958, -122.170231));
+      fakeCoords.push(new google.maps.LatLng(37.427924, -122.169931));
+    }
+
+    function loadScript() {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+          'callback=initialize';
+      document.body.appendChild(script);
+    }
+
+    function fake_watchPos_success() {
+      if (fakeCoords.length > 0) {
+        var newPos = fakeCoords.shift();
+        var marker = new google.maps.Marker({
+          position: newPos,
+          map: map,
+          title:"fake"
+        });
+        var lastPos = coords[coords.length-1];
+        var lineCoords = [lastPos, newPos];
+        var line = new google.maps.Polyline({
+          path: lineCoords,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        line.setMap(map);
+        coords.push(newPos);
+      } else console.log("no more fake markers!");
+    }
+
+    window.onload = loadScript;
+    document.onkeypress = function(event) {
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13') {
+        fake_watchPos_success();
+      }
+    };
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
