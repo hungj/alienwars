@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Asynchronous Loading</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      #drop {
+        position: absolute;
+        left: 50px;
+        top: 0px;
+        z-index: 101;
+        padding: 10px;
+        border: 3px solid black;
+      }
+    </style>
+    <script>
+    if (navigator.geolocation) {
+      console.log('Geolocation is supported!');
+    }
+    else {
+      console.log('Geolocation is not supported for this Browser/OS version yet.');
+    }
+    var map;
+
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 30000,
+      maximumAge: 0
+    };
+
+    function output_coords(pos) {
+      var crd = pos.coords;
+      console.log('Latitude : ' + crd.latitude);
+      console.log('Longitude: ' + crd.longitude);
+      console.log('More or less ' + crd.accuracy + ' meters.')
+    }
+
+    function dropPin(pos) {
+      var crd = pos.coords;
+      var myLatlng = new google.maps.LatLng(crd.latitude, crd.longitude);
+      var mapOptions = {
+        zoom: 18,
+        center: myLatlng
+      };
+      map = new google.maps.Map(document.getElementById('map-canvas'),
+          mapOptions);
+      var marker = new google.maps.Marker({
+          position: myLatlng,
+          map: map,
+          title:""
+      });
+      alert("Pin dropped!");
+    }
+
+    function error(err) {
+      alert("Error: " + err.code + " " + err.message);
+    }
+
+    function initialize() {
+      navigator.geolocation.getCurrentPosition(dropPin, error, options);
+      document.getElementById("drop").addEventListener("click", clickHandler);
+    }
+
+    function loadScript() {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+          'callback=initialize';
+      document.body.appendChild(script);
+    }
+    window.onload = loadScript;
+    
+    function clickHandler(event) {
+      navigator.geolocation.getCurrentPosition(dropPin, error, options);
+    }
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id="drop">DROP PIN</div>
+  </body>
+</html>
