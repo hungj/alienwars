@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Ground Overlays</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+// This example uses a GroundOverlay to place an image on the map
+// showing an antique map of Newark, NJ.
+
+var historicalOverlay;
+
+function initialize() {
+
+  var newark = new google.maps.LatLng(40.740, -74.18);
+  var styles = [
+    {
+      stylers: [
+        { lightness: 100 }
+      ]
+    },{
+      featureType: "all",
+      stylers: [
+        { visibility: "off" },
+        { lightness: 100 }
+      ]
+    }
+  ];
+
+  var mapOptions = {
+    zoom: 12,
+    center: newark,
+    disableDefaultUI: true,
+    maxZoom: 12,
+    minZoom: 12,
+    draggable: false,
+    scrollwheel: false,
+    disableDoubleClickZoom: true
+  };
+
+  var flightPlanCoordinates = [
+    new google.maps.LatLng(40.712216, -74.22655),
+    new google.maps.LatLng(40.773941, -74.12544)
+  ];
+  var flightPath = new google.maps.Polyline({
+    path: flightPlanCoordinates,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  map.setOptions({styles: styles});
+
+  flightPath.setMap(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>

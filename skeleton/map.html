@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Outdoors Pictionary</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      .timer-container {
+        position: absolute;
+        z-index: 101;
+        width: 100%;
+        text-align: center;
+      }
+      #start-finish-btn {
+        position: absolute;
+        z-index: 101;
+        left: 0;
+        top: 90%;
+        height: 10%;
+      }
+      .button-container {
+        padding-top: 5%;
+        text-align: center;
+      }
+      #no-btn, #yes-btn {
+        width:30%;
+      }
+    </style>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            Are you sure you're finished drawing?
+            <br>
+            <div class="button-container">
+              <button type="button" class="btn btn-danger btn-lg" id="no-btn" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary btn-lg" id="yes-btn">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timer-container">
+      <h1 id="timer" class="text-center">0:00</h1>
+    </div>
+    <div id="map-canvas"></div>
+    <button id="start-finish-btn" type="button" class="btn btn-primary btn-lg btn-block">Start</button>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/counter.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        // Create the timer
+        var timer = new Counter('timer', 10, function(){
+          alert("transition to results page");
+        });
+        var timerOn = false;
+
+        // Start the timer and change the "Ready" button to "Done"
+        function startGame() {
+          timerOn = true;
+          document.getElementById("start-finish-btn").innerHTML = "Done";
+          timer.countdown();
+        }
+
+        // Control the Ready/Done button
+        document.getElementById("start-finish-btn").addEventListener("click", function(e){
+          if (timerOn) {
+            $("#myModal").modal("show");
+            timer.pause();
+          } else startGame();
+        });
+        document.getElementById("no-btn").addEventListener("click", startGame);
+      });
+
+      // Load Google Maps
+      function initialize() {
+        var mapOptions = {
+          zoom: 8,
+          center: new google.maps.LatLng(-34.397, 150.644)
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+      }
+      function loadScript() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+            'callback=initialize';
+        document.body.appendChild(script);
+      }
+      window.onload = loadScript;
+    </script>
+  </body>
+</html>
