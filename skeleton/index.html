@@ -15,24 +15,66 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+      #game-results-table {
+        margin-top: 5%;
+      }
+      #name-panel, #game-success-panel, #createGamePassword, #create-game-controls {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <h2>What is your name?</h2>
-    <form role="form">
-      <div class="form-group">
-        <label class="sr-only" for="nameInput">Name</label>
-        <input id="nameInput" type="text" class="form-control" placeholder="Scott K">
-      </div>
-      <button id="submit-btn" type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
-    </form>
+    <div id="name-panel">
+      <h2>What is your name?</h2>
+      <form role="form">
+        <div class="form-group">
+          <label class="sr-only" for="nameInput">Name</label>
+          <input id="nameInput" type="text" class="form-control" placeholder="Scott K">
+        </div>
+        <button id="name-submit-btn" type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+      </form>
+    </div>
+    <div id="game-panel">
+      <h2 id="game-panel-label">Search for Game</h2>
+      <form role="form">
+        <div class="form-group">
+          <label for="gameNameInput">Game Name</label>
+          <input id="gameNameInput" type="text" class="form-control" placeholder="Game Name">
+        </div>
+        <div class="form-group" id="createGamePassword">
+          <label for="createGamePasswordInput">Enter a Password for your Game</label>
+          <input id="createGamePasswordInput" type="text" class="form-control" placeholder="Game Password">
+        </div>
+        <div id="search-game-controls">
+          <button id="search-btn" type="button" class="btn btn-primary btn-lg btn-block">Search</button>
+          <button id="create-game-option" type="button" class="btn btn-success btn-lg btn-block btn-link">or Create a New Game</button>
+        </div>
+        <div id="create-game-controls">
+          <button id="create-game-btn" type="button" class="btn btn-primary btn-lg btn-block">Create</button>
+          <button id="search-game-option" type="button" class="btn btn-success btn-lg btn-block btn-link">or Search for an Existing Game</button>
+        </div>
+      </form>
+      <table id="game-results-table" class="table table-striped"></table>
+    </div>
+    <div id="game-success-panel">
+      <h2>Game Creation</h2>
+      <p>Your game was created successfully!  Your password is: <b id="result-password">PASSWORD</b>.  Give your friends this password so they can join your game.</p>
+      <button id="proceed-btn" type="button" class="btn btn-primary btn-lg btn-block">Proceed to Game</button>
+    </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
+    <script src="js/search-results-table.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function(){
-        document.getElementById("submit-btn").addEventListener("click", function(){
+        var fb = new Firebase('http://outdoorspictionary.firebaseIO.com');
+
+        // Control the username panel
+        document.getElementById("name-submit-btn").addEventListener("click", function(){
           var username = document.getElementById("nameInput").value;
           if (username == "") alert("Username can't be blank");
           else {
@@ -40,6 +82,54 @@
             window.location = "picture.html";
           }
         });
+
+        // Control the game search panel
+        var searchResultsTable = new SearchResultsTable("game-results-table", "gameNameInput");
+        document.getElementById("search-btn").addEventListener("click", function(){
+          document.getElementById("game-results-table").style.display = "block";
+          searchResultsTable.populate(fb);
+        });
+
+        // Search mode
+        document.getElementById("search-game-option").addEventListener("click", function(){
+          document.getElementById("game-panel-label").innerHTML = "Search for a Game";
+          document.getElementById("createGamePassword").style.display = "none";
+          document.getElementById("create-game-controls").style.display = "none";
+          document.getElementById("search-game-controls").style.display = "block";
+        });
+
+        // Create mode
+        document.getElementById("create-game-option").addEventListener("click", function(){
+          document.getElementById("game-results-table").style.display = "none";
+          document.getElementById("game-panel-label").innerHTML = "Create a New Game";
+          document.getElementById("createGamePassword").style.display = "block";
+          document.getElementById("create-game-controls").style.display = "block";
+          document.getElementById("search-game-controls").style.display = "none";
+        });
+
+        // Control the create game panel
+        document.getElementById("create-game-btn").addEventListener("click", function() {
+          var name = document.getElementById("gameNameInput").value;
+          var password = document.getElementById("createGamePasswordInput").value;
+          fb.child('Games').once('value', function(gamesSnapshot){
+            var games = gamesSnapshot.val();
+            for (var game in games) {
+              if (games[game].name == name) {
+                alert("A game with that name already exists");
+                return;
+              }
+            }
+            fb.child('Games').push({name:name, password:password});
+            document.getElementById("game-panel").style.display = "none";
+            document.getElementById("game-success-panel").style.display = "block";
+            document.getElementById("result-password").innerHTML = password;
+          });
+        });
+
+        document.getElementById("proceed-btn").addEventListener("click", function(){
+          window.location = "picture.html";
+        });
+
       });
     </script>
   </body>

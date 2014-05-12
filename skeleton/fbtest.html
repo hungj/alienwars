@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firebase Test</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1>Firebase test</h1>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        var fb = new Firebase('http://outdoorspictionary.firebaseIO.com');
+        //fb.child('Games').push({name:"Game 2", password:"brownies", users:[{name:"David"}, {name:"Elaine"}], numUsers:2 });
+        //fb.child('Games').push({name:"Game 3", password:"cakes", users:[{name:"Frank"}, {name:"Gabby"}, {name:"Hank"}, {name:"Ingrid"}], numUsers:4 });
+        var name = "Game 1";
+        fb.child('Games').once('value', function(gamesSnapshot){
+          var games = gamesSnapshot.val();
+          for (var game in games) {
+            if (games[game].name == name) {
+              console.log(game);
+              fb.child('Games/' + game).once('value', function(gameSnapshot){
+                console.log(game);
+                var numUsers = gameSnapshot.val().numUsers;
+                fb.child('Games/' + game).update({numUsers: numUsers+1});
+              });
+              /*fb.child('Games/' + game + '/numUsers').once('value', function(numUsersSnapshot){
+                var numUsers = numUsersSnapshot.val();
+                console.log(game);
+                fb.child('Games/' + game).update({numUsers: 4000}, function(){alert("updated completed!")});
+              });*/
+            }
+          }
+        });
+        /*fb.child('Games').once('value', function(gamesSnapshot){
+          var games = gamesSnapshot.val();
+          for (var game in games) {
+            fb.child('Games/' + game + '/users').once('value', function(dataSnapshot){
+              console.log(dataSnapshot.numChildren());
+            });
+          }
+        });
+        */
+      });
+    </script>
+  </body>
+</html>

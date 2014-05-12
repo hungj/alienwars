@@ -32,7 +32,7 @@ Counter.prototype.countdown = function() {
     counter.numSeconds--;
     if (counter.numSeconds < 0) {
       clearInterval(counter.intervalID);
-      counter.endFn();
+      counter.endFn(); 
     } else counter.clock.innerHTML = counter.toReadableTimeFormat();
   }, 1000);
 }

@@ -74,7 +74,7 @@
       document.addEventListener('DOMContentLoaded', function(){
         // Create the timer
         var timer = new Counter('timer', 10, function(){
-          alert("transition to results page");
+          window.location = "results.html"
         });
         var timerOn = false;
 
@@ -91,6 +91,11 @@
             $("#myModal").modal("show");
             timer.pause();
           } else startGame();
+        });
+
+        // Yes and No button
+        document.getElementById("yes-btn").addEventListener("click", function(e){
+          window.location = "results.html"
         });
         document.getElementById("no-btn").addEventListener("click", startGame);
       });
