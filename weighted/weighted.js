@@ -1,26 +1,23 @@
-var dispCoords;
-var map;
-
-
-var lastLocation;
-var watch;
+// Constants
 var RADIUS = 1;
 
+// Initialize the map
+var dispCoords, map, lastLocation, watch;
 google.maps.event.addDomListener(window, 'load', function initialize() {
-	var latitude, longitude;
+  var latitude, longitude;
   document.getElementById("paintbrush").onclick = toggleDraw;
   navigator.geolocation.getCurrentPosition(function(position) {
-		latitude = position.coords.latitude;
-		longitude = position.coords.longitude;	
-  lastLocation = new google.maps.LatLng(latitude, longitude);
-  var mapOptions = {
-    zoom: 18,
-    center: lastLocation
-  };
-  map = new google.maps.Map(document.getElementById('location'), mapOptions);
-  dispCoords = document.getElementById('coords');
-  dispCoords.innerHTML = "<p>" + latitude + "," + longitude + "</p>";
-	});
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;  
+    lastLocation = new google.maps.LatLng(latitude, longitude);
+    var mapOptions = {
+      zoom: 18,
+      center: lastLocation
+    };
+    map = new google.maps.Map(document.getElementById('location'), mapOptions);
+    dispCoords = document.getElementById('coords');
+    dispCoords.innerHTML = "<p>" + latitude + "," + longitude + "</p>";
+  });
 });
 
 var calibrate = 0;
@@ -54,7 +51,7 @@ function setLocation(position) {
   /*https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
   https://developers.google.com/maps/documentation/javascript/examples/marker-simple*/
 
-	var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
+  var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
   
   if (hDist(pos, lastLocation) < THRESHOLD && hDist(pos, lastLocation) != 0) {
     googleCoords.push(position);
