@@ -11,7 +11,8 @@ GameCreator.prototype.addGametoDB = function(gameName, username) {
 	  if (request.status >= 200 && request.status < 400){
 	    alert("game successfully created");
 	    resp = request.responseText;
-	    // TODO Transition to Game start
+	    localStorage.game = gameName;
+	    window.location = '/waiting_room';
 	  } else {
 	    alert("error");
 	  }

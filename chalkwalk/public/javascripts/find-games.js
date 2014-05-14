@@ -57,7 +57,7 @@ GameFinder.prototype.search = function() {
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
 			data_array = JSON.parse(request.responseText);
-			if (data_array.length == 0) {
+			if (data_array.length == 0 || !data_array[0].active) {
 				gamefinder.errorMsg.innerHTML = "There are no games with that name."
 				gamefinder.errorMsg.style.display = 'block';
 				gamefinder.table.style.display = 'none';
@@ -65,26 +65,28 @@ GameFinder.prototype.search = function() {
 				gamefinder.errorMsg.style.display = 'none';
 				gamefinder.table.style.display = 'table';
 				gamefinder.createHeaderRow();
-				data_array.forEach(function(data, i){
-					// Game Name
-					var row = document.createElement("tr");
-					var nameTd = document.createElement("td");
-					nameTd.innerHTML = data.name;
-					row.appendChild(nameTd);
+				var data = data_array[0];
 
-					// Join 
-					var buttonTd = document.createElement("td");
-					var button = document.createElement("button");
-					button.innerHTML = "Join";
-					button.type = "button";
-					button.className = "btn btn-primary";
-					button.addEventListener("click", function(){
-						gamefinder.joinGame(data.name, localStorage.username);
-					});
-					buttonTd.appendChild(button);
-					row.appendChild(buttonTd);
-					gamefinder.tbody.appendChild(row);
+				// Game Name
+				var row = document.createElement("tr");
+				var nameTd = document.createElement("td");
+				nameTd.innerHTML = data.name;
+				row.appendChild(nameTd);
+
+				// Join 
+				var buttonTd = document.createElement("td");
+				var button = document.createElement("button");
+				button.innerHTML = "Join";
+				button.type = "button";
+				button.className = "btn btn-primary";
+				button.addEventListener("click", function(){
+					gamefinder.joinGame(data.name, localStorage.username);
+					localStorage.game = data.name;
+					window.location = '/waiting_room';
 				});
+				buttonTd.appendChild(button);
+				row.appendChild(buttonTd);
+				gamefinder.tbody.appendChild(row);
 			}
 		} else {
 			console.log("error");

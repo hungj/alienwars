@@ -6,6 +6,12 @@ router.get('/', function(req, res) {
   res.render('index');
 });
 
+/* GET waiting room. */
+router.get('/waiting_room', function(req, res) {
+  res.render('waiting_room');
+});
+
+
 // Search for a game
 router.get('/gamefinder/:name', function(req, res) {
 	var name = req.params.name;
@@ -15,12 +21,12 @@ router.get('/gamefinder/:name', function(req, res) {
     });
 });
 
-// Add a user to a game
+// Create a game
 router.post('/create/:gameName/:username', function(req, res) {
 	var gameName = req.params.gameName;
 	var username = req.params.username;
 	var db = req.db;
-	db.collection('games').insert({'name': gameName, 'users':[username]}, function(err, result){
+	db.collection('games').insert({'name': gameName, 'users': [username], 'master': username, 'active':true}, function(err, result){
 		res.send(
             (err === null) ? { msg: '' } : { msg: err }
         );
