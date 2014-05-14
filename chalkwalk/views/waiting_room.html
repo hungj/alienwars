@@ -83,12 +83,11 @@
           alert("Game start now!");
         });
 
-        // Guard against the user refreshing the page
+        // Guard against the user refreshing the page and adding themselves to the game twice (not the DB, just the front end)
         if (localStorage.waiting == undefined) {
           roleTable.welcomeNewUser();
           localStorage.waiting = true;
         }
-        
       });
 
     </script>
