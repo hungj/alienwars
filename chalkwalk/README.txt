@@ -10,6 +10,8 @@ Known Bugs
 
 localStorage
 ------------
+- active: Whether the room is available to join or not
+- drawers: Players who will draw in the game
 - game: Name of the game that the user is currently playing.
 - imageFile: The file name of the random image assigned to the game.
 - imageName: The name of the random image assigned to the game.

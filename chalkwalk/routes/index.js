@@ -17,7 +17,7 @@ router.get('/prep', function(req, res) {
 });
 
 
-// Search for a game
+// GET Search for a game
 router.get('/gamefinder/:name', function(req, res) {
 	var name = req.params.name;
 	var db = req.db;
@@ -26,7 +26,7 @@ router.get('/gamefinder/:name', function(req, res) {
     });
 });
 
-// Create a game
+// POST Create a game
 router.post('/create/:gameName/:username', function(req, res) {
 	var gameName = req.params.gameName;
 	var username = req.params.username;
@@ -38,12 +38,23 @@ router.post('/create/:gameName/:username', function(req, res) {
 	});
 });
 
-// Add a user to a game
+// PUT Add a user to a game
 router.put('/join/:gameName/:username', function(req, res) {
 	var gameName = req.params.gameName;
 	var username = req.params.username;
 	var db = req.db;
 	db.collection('games').update({'name': gameName}, {$push: { users: username }}, function(err, result){
+		res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+	});
+});
+
+// PUT Close a Game
+router.put('/closegame/:gameName', function(req, res) {
+	var gameName = req.params.gameName;
+	var db = req.db;
+	db.collection('games').update({'name': gameName}, {$set: { 'active': false }}, function(err, result){
 		res.send(
             (err === null) ? { msg: '' } : { msg: err }
         );

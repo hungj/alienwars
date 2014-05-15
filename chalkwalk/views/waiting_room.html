@@ -97,7 +97,7 @@
 
         /* Controls the Start button and listens for when the master presses the start button.
            Stores the random image that the master randomly selected in localStorage. */
-        var startButton = new StartButton("start-game-btn", roleCounter);
+        var startButton = new StartButton("start-game-btn", roleCounter, userRoleMap);
         startButton.initialize(localStorage.username, localStorage.game);
         fb.child('Games').child(localStorage.game).child('start').on('child_added', function(snapshot) {
           localStorage.imageName = snapshot.val().answer;

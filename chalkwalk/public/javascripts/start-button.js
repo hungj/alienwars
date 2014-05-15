@@ -3,9 +3,10 @@
  * A class to control the start button on the waiting room page.  The master of the
  * game selects this to transition from the waiting room to gameplay. 
  */
-function StartButton(buttonId, roleCounter) {
+function StartButton(buttonId, roleCounter, userRoleMap) {
 	this.button = document.getElementById(buttonId);
 	this.roleCounter = roleCounter;
+	this.userRoleMap = userRoleMap;
 }
 /*
  * revealButton()
@@ -16,14 +17,40 @@ StartButton.prototype.implementButton = function (gameName) {
 	var startButton = this;
 	this.button.style.display = 'block';
 	this.button.addEventListener("click", function(){
-		if (startButton.roleCounter.Drawer < 1 || startButton.roleCounter < 1) {
+		if (startButton.roleCounter.Drawer < 1 || startButton.roleCounter.Guesser < 1) {
 			alert("You must have at least 1 Drawer and 1 Guesser!");
 			return;
 		}
-		var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + gameName + '/start');
+		startButton.closeGame(gameName);
+		var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + gameName);
+		for (var user in startButton.userRoleMap) {
+			if (userRoleMap[user].innerHTML == 'Drawer') {
+				fb.child('drawers').child(user).push({'init':0});
+			}
+		}
 		var randomImage = getRandomImage();
-		fb.push(randomImage);
+		fb.child('start').push(randomImage);
 	});
+}
+
+/*
+ * closeGame(gameName)
+ * Sends a PUT request to MongoDB to change the active status of a game to false.
+ */
+StartButton.prototype.closeGame= function (gameName) {
+	var request = new XMLHttpRequest();
+	request.open('PUT', '/closegame/' + gameName, true);
+	request.onload = function() {
+		if (request.status >= 200 && request.status < 400) {
+			console.log("Game was made inactive!");
+		} else {
+			console.log("error");
+		}
+	};
+	request.onerror = function() {
+		console.log("Request faild to send");
+	};
+	request.send();
 }
 
 /*
