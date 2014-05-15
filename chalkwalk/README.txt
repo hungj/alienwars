@@ -10,7 +10,8 @@ Known Bugs
 
 localStorage
 ------------
-- game: Name of the game that the user is currently playing
-- image: The random image assigned to the drawers for this round of the game.  The image is an object {answer, file}.
-- username: Name of the user
+- game: Name of the game that the user is currently playing.
+- imageFile: The file name of the random image assigned to the game.
+- imageName: The name of the random image assigned to the game.
+- username: Name of the user,
 - waiting: Boolean flag to see if the user has already entered the waiting room.  This is to prevent the bug where the user refreshes in the waiting room and simualtes another user entering the waiting room.

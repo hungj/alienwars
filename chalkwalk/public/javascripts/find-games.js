@@ -97,7 +97,7 @@ GameFinder.prototype.joinGame = function(gameName, username) {
 	request.open('PUT', '/join/' + gameName + "/" + username, true);
 	request.onload = function() {
 	  if (request.status >= 200 && request.status < 400){
-			localStorage.game = data.name;
+			localStorage.game = gameName;
 			window.location = '/waiting_room';
 	  } else {
 	    console.log("Error");

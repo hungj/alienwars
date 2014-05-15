@@ -3,8 +3,9 @@
  * A class to control the start button on the waiting room page.  The master of the
  * game selects this to transition from the waiting room to gameplay. 
  */
-function StartButton(buttonId) {
+function StartButton(buttonId, roleCounter) {
 	this.button = document.getElementById(buttonId);
+	this.roleCounter = roleCounter;
 }
 /*
  * revealButton()
@@ -12,8 +13,13 @@ function StartButton(buttonId) {
  * generate a random image object and push that to Firebase.  
  */
 StartButton.prototype.implementButton = function (gameName) {
+	var startButton = this;
 	this.button.style.display = 'block';
 	this.button.addEventListener("click", function(){
+		if (startButton.roleCounter.Drawer < 1 || startButton.roleCounter < 1) {
+			alert("You must have at least 1 Drawer and 1 Guesser!");
+			return;
+		}
 		var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + gameName + '/start');
 		var randomImage = getRandomImage();
 		fb.push(randomImage);

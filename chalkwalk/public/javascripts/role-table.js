@@ -39,6 +39,5 @@ RoleTable.prototype.addUserToTable = function(name, userRoleMap) {
 	roleData.innerHTML = "Drawer";
 	row.appendChild(roleData);
 	this.tbody.appendChild(row);
-
 	userRoleMap[name] = roleData;
 }

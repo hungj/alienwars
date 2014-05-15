@@ -46,6 +46,7 @@
         /* Creates the timer.  Redirect to the map page when the timer expires. */
         var timer = new Counter('timer', 10, function(){
           originalImage.style.display = 'none';
+          imageName.style.display = 'none';
           alert("redirect to map.html now");
           //window.location = "map.html";
         });
@@ -54,8 +55,8 @@
         timer. */
         document.getElementById("ready-btn").addEventListener("click", function(e){
           this.style.display = 'none';
-          originalImage.src = localStorage.image.file;
-          imageName.innerHTML = localStorage.image.answer;
+          originalImage.src = localStorage.imageFile;
+          imageName.innerHTML = localStorage.imageName;
           originalImage.style.display = 'block';
           imageName.style.display = 'block';
           timer.countdown();
