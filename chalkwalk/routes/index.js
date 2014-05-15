@@ -1,14 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+// GET home page
 router.get('/', function(req, res) {
   res.render('index');
 });
 
-/* GET waiting room. */
+// GET waiting room
 router.get('/waiting_room', function(req, res) {
   res.render('waiting_room');
+});
+
+// GET prep room
+router.get('/prep', function(req, res) {
+  res.render('prep');
 });
 
 

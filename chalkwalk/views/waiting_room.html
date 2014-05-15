@@ -48,14 +48,14 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="javascripts/bootstrap.min.js"></script>
     <script src="javascripts/role-table.js"></script>
+    <script src="javascripts/random-image.js"></script>
     <script src="javascripts/start-button.js"></script>
     <script>
       var fb = new Firebase('https://outdoorspictionary.firebaseIO.com');
-      var userRoleMap = {};
       document.addEventListener('DOMContentLoaded', function(){
         document.getElementById("game-name-header").innerHTML = localStorage.game;
 
-        // Push role changes to Firebase
+        // Push role changes to Firebase.
         var radioBtns = document.getElementsByClassName("roleRadioButton");
         Array.prototype.filter.call(radioBtns, function(radioBtn){
           radioBtn.addEventListener("click", function(){
@@ -63,33 +63,36 @@
           });
         });
 
-        // Listen to role changes
+        // Listen to role changes.  userRoleMap maps username to DOM td element.
+        var userRoleMap = {};
         fb.child('Games').child(localStorage.game).child('roleChanges').on('child_added', function(snapshot) {
           var change = snapshot.val();
           userRoleMap[change.name].innerHTML = change.role;
         });
 
-        // Listen to new users
+        // Listen to new users and add them to the table as they enter.
         var roleTable = new RoleTable("role-tbody", localStorage.game);
         fb.child('Games').child(localStorage.game).child('users').on('child_added', function(snapshot) {
           var newUser = snapshot.val();
           roleTable.addUserToTable(newUser.name, userRoleMap);
         });
 
-        // Control start button
+        /* Controls the Start button and listens for when the master presses the start button.
+           Stores the random image that the master randomly selected in localStorage. */
         var startButton = new StartButton("start-game-btn");
-        startButton.initialize();
+        startButton.initialize(localStorage.username, localStorage.game);
         fb.child('Games').child(localStorage.game).child('start').on('child_added', function(snapshot) {
+          localStorage.image = snapshot.val();
           alert("Game start now!");
         });
 
-        // Guard against the user refreshing the page and adding themselves to the game twice (not the DB, just the front end)
+        /* Guard against the user refreshing the page and adding themselves to the game twice.
+           If this is the user's first time in the waiting room, add them to the firebase. */
         if (localStorage.waiting == undefined) {
-          roleTable.welcomeNewUser();
+          fb.child(this.gameName).child('users').push({'name':localStorage.username});
           localStorage.waiting = true;
         }
       });
-
     </script>
   </body>
 </html>

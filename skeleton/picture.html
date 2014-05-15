@@ -11,6 +11,9 @@
         margin-left: auto;
         display: none
       }
+      #image-name {
+        text-align: center;
+      }
     </style>
 
     <!-- Bootstrap -->
@@ -26,7 +29,8 @@
   <body>
     <h1 id="timer" class="text-center">0:00</h1>
     <button id="ready-btn" type="button" class="btn btn-primary btn-lg btn-block">Ready?</button>
-    <img id="original-image" src="http://www.clker.com/cliparts/O/L/d/K/i/N/simple-flower-md.png" class="img-responsive" alt="Responsive image">
+    <img id="original-image" src="" class="img-responsive" alt="Responsive image">
+    <h1 id="image-name"></h1>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -35,16 +39,24 @@
     <script src="js/counter.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function(){
-        // Create the timer
+        var originalImage = document.getElementById("original-image");
+        var imageName = document.getElementById("image-name");
+        var randomImg = getRandomImage();
+        
+        /* Creates the timer.  Redirect to the map page when the timer expires. */
         var timer = new Counter('timer', 10, function(){
-          document.getElementById("original-image").style.display = 'none';
+          originalImage.style.display = 'none';
           window.location = "map.html";
         });
 
-        // Control the "Ready" button
+        /* Controls the Ready button.  Reveals and image and the answer and starts the 
+        timer. */
         document.getElementById("ready-btn").addEventListener("click", function(e){
           this.style.display = 'none';
-          document.getElementById("original-image").style.display = 'block';
+          originalImage.src = randomImg.file;
+          imageName.innerHTML = randomImg.answer;
+          originalImage.style.display = 'block';
+          imageName.style.display = 'block';
           timer.countdown();
         });
       });
