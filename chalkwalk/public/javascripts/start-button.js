@@ -23,11 +23,6 @@ StartButton.prototype.implementButton = function (gameName) {
 		}
 		startButton.closeGame(gameName);
 		var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + gameName);
-		for (var user in startButton.userRoleMap) {
-			if (userRoleMap[user].innerHTML == 'Drawer') {
-				fb.child('drawers').child(user).push({'init':0});
-			}
-		}
 		var randomImage = getRandomImage();
 		fb.child('start').push(randomImage);
 	});

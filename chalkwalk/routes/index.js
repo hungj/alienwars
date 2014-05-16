@@ -16,6 +16,15 @@ router.get('/prep', function(req, res) {
   res.render('prep');
 });
 
+// GET drawing room
+router.get('/drawer', function(req, res) {
+  res.render('drawer');
+});
+
+// GET drawing room
+router.get('/guesser', function(req, res) {
+  res.render('guesser');
+});
 
 // GET Search for a game
 router.get('/gamefinder/:name', function(req, res) {

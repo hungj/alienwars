@@ -7,11 +7,16 @@ Known Bugs
 -Two users with the same name joining the same game
 -Can we detect when a user leaves the waiting room so it updates that database and the front end?  There's a danger of the user pressing the back button and rejoining the game room (two copies of the user in the database).
 
+Design Decisions
+----------------
+Drawers : will not see them drawing; page will only display a paintbrush
+Guessers : sees everybody's progress
+
 
 localStorage
 ------------
 - active: Whether the room is available to join or not
-- drawers: Players who will draw in the game
+- numDrawers: The number of drawers in the game.  This is to detect when the game is ready to start.
 - game: Name of the game that the user is currently playing.
 - imageFile: The file name of the random image assigned to the game.
 - imageName: The name of the random image assigned to the game.

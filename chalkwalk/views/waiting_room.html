@@ -100,12 +100,13 @@
         var startButton = new StartButton("start-game-btn", roleCounter, userRoleMap);
         startButton.initialize(localStorage.username, localStorage.game);
         fb.child('Games').child(localStorage.game).child('start').on('child_added', function(snapshot) {
+          localStorage.numDrawers = roleCounter['Drawer'];
           localStorage.imageName = snapshot.val().answer;
           localStorage.imageFile = snapshot.val().file;
           if (localStorage.role == 'Drawer') {
             window.location = '/prep';
           } else {
-            alert("Redirect to where ever a Guesser would go.");
+            window.location = '/guesser';
           }
         });
       });

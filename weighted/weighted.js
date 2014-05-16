@@ -1,5 +1,7 @@
 // Constants
 var RADIUS = 1;
+var coordsDB = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/Matter/coords');
+
 
 // Initialize the map
 var dispCoords, map, lastLocation, watch;
@@ -47,6 +49,7 @@ if (isNaN(parseInt(numData))) {
 }
 localStorage['numData'] = parseInt(localStorage['numData']) + 1;
 function setLocation(position) {
+  alert("new position");
   var loc = document.getElementById('location');
   /*https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
   https://developers.google.com/maps/documentation/javascript/examples/marker-simple*/
@@ -89,6 +92,8 @@ function setLocation(position) {
       });
   
       calibrateCoords.push(cLocation);
+      coordsDB.push({'lat':cLocation.lat(), 'lng':cLocation.lng()});
+      alert("pushed");
       var storeLocations = JSON.parse(localStorage[numData.toString()] || "null");
       if (storeLocations == null) {storeLocations = [cLocation];}
       storeLocations.push(cLocation);

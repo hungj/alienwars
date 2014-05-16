@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chalk Walk - Guess</title>
+
+    <!-- Bootstrap -->
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      #waiting-msg, #timer {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="waiting-msg">Waiting for everyone to enter the room...</h1>
+    <h1 id="timer" class="text-center">0:00</h1>
+    <div id="location"></div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/counter.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        // Initialize everything
+        var numDrawersReady = 0;
+        var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + localStorage.game);
+        var lastRecordedCoords = {};
+        var timer = new Counter('timer', 10, function(){
+          alert("Drawing time is over!");
+        });
+        
+        // Listen to drawers coming into the drawing room and start the game when everybody is in the drawing room
+        fb.child('drawers').on('child_added', function(snapshot) {
+          numDrawersReady++;
+          if (numDrawersReady == localStorage.numDrawers) {
+            document.getElementById('waiting-msg').style.display = 'none';
+            document.getElementById('timer').style.display = 'block';
+            timer.countdown();
+            // load the blank map
+          }
+        });
+
+        // Everytime coordinates are added, draw a line.
+        function recordCoordinates() {
+          fb.child('coords').on('child_added', function(snapshot) {
+            var data = snapshot.val();
+            var user = data.name;
+            var newCoords = data.coords;
+            if (lastRecordedCoords[user] == undefined) {
+              lastRecordedCoords[user] = newCoords;
+            } else {
+              var oldCoords = lastRecordedCoords[user];
+              lastRecordedCoords[user] = newCoords;
+              //drawLine(oldCoords, newCoords);
+            }
+          });
+        }
+      });
+
+    </script>
+  </body>
+</html>
