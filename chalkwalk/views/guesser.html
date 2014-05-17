@@ -9,6 +9,8 @@
     <!-- Bootstrap -->
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="javascripts/guesser.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -16,14 +18,23 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-      #waiting-msg, #timer {
+      #timer {
         display: none;
+      }
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #location { height: 100% }
+      #waiting-msg, #timer {
+        position: absolute;
+        width: 100%;
+        z-index: 101;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <h1 id="waiting-msg">Waiting for everyone to enter the room...</h1>
-    <h1 id="timer" class="text-center">0:00</h1>
+    <h1 id="timer">0:00</h1>
     <div id="location"></div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -35,12 +46,12 @@
       document.addEventListener('DOMContentLoaded', function(){
         // Initialize everything
         var numDrawersReady = 0;
-        var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + localStorage.game);
-        var lastRecordedCoords = {};
-        var timer = new Counter('timer', 10, function(){
-          alert("Drawing time is over!");
+        var timer = new Counter('timer', 180, function(){
+          alert("Drawing time is over! Transition to results page");
         });
-        
+
+        initializeMap();
+
         // Listen to drawers coming into the drawing room and start the game when everybody is in the drawing room
         fb.child('drawers').on('child_added', function(snapshot) {
           numDrawersReady++;
@@ -48,27 +59,9 @@
             document.getElementById('waiting-msg').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
             timer.countdown();
-            // load the blank map
           }
         });
-
-        // Everytime coordinates are added, draw a line.
-        function recordCoordinates() {
-          fb.child('coords').on('child_added', function(snapshot) {
-            var data = snapshot.val();
-            var user = data.name;
-            var newCoords = data.coords;
-            if (lastRecordedCoords[user] == undefined) {
-              lastRecordedCoords[user] = newCoords;
-            } else {
-              var oldCoords = lastRecordedCoords[user];
-              lastRecordedCoords[user] = newCoords;
-              //drawLine(oldCoords, newCoords);
-            }
-          });
-        }
       });
-
     </script>
   </body>
 </html>
