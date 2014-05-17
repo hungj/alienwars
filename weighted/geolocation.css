@@ -16,6 +16,10 @@ html, body {
     padding: 0px;
 }
 
+#copyOfMap {
+  border-style:solid;
+  border-width:1px;
+}
 #location {
     height: 90%;
     margin: 0px;

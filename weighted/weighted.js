@@ -56,7 +56,7 @@ function setLocation(position) {
 
   var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); 
   
-  if (hDist(pos, lastLocation) < THRESHOLD && hDist(pos, lastLocation) != 0) {
+  if (hDist(pos, lastLocation) < THRESHOLD/* && hDist(pos, lastLocation) != 0*/) {
     googleCoords.push(position);
     len++;
     calibrate = (calibrate + 1);
