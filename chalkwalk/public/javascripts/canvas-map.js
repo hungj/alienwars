@@ -32,6 +32,7 @@ function recordCoordinates(fb) {
     if (lastRecordedCoords[user] == undefined) {
       lastRecordedCoords[user] = newCoords;
     } else {
+      console.log("line drawn!");
       var oldCoords = lastRecordedCoords[user];
       lastRecordedCoords[user] = newCoords;
       drawLine(oldCoords, newCoords);
@@ -49,4 +50,8 @@ function drawLine(pos1, pos2) {
     strokeWeight: 2,
     map: canvasMap
   });
+}
+
+function stopDrawing(fb) {
+  fb.child('coords').off('child_added');
 }

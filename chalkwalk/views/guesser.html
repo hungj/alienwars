@@ -55,8 +55,9 @@
         // Initialize
         var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + localStorage.game);
         var numDrawersReady = 0;
-        var timer = new Counter('timer', 18000, function(){
+        var timer = new Counter('timer', 10, function(){
           alert("Drawing time is over! Transition to results page");
+          stopDrawing(fb);
         });
 
         // Listen to drawers coming into the drawing room and start the game when everybody is in the drawing room
