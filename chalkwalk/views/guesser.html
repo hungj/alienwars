@@ -10,7 +10,7 @@
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    <script src="javascripts/guesser.js"></script>
+    <script src="javascripts/canvas-map.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -18,24 +18,32 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-      #timer {
-        display: none;
+      html { 
+        height: 100%; 
       }
-      html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0 }
-      #location { height: 100% }
+      body { 
+        height: 100%; 
+        margin: 0; 
+        padding: 0 
+      }
+      #canvas-map { 
+        height: 100%; 
+      }
       #waiting-msg, #timer {
         position: absolute;
         width: 100%;
         z-index: 101;
         text-align: center;
       }
+      #timer {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <h1 id="waiting-msg">Waiting for everyone to enter the room...</h1>
     <h1 id="timer">0:00</h1>
-    <div id="location"></div>
+    <div id="canvas-map"></div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -44,23 +52,26 @@
     <script src="javascripts/counter.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function(){
-        // Initialize everything
+        // Initialize
+        var fb = new Firebase('https://outdoorspictionary.firebaseIO.com/Games/' + localStorage.game);
         var numDrawersReady = 0;
-        var timer = new Counter('timer', 180, function(){
+        var timer = new Counter('timer', 18000, function(){
           alert("Drawing time is over! Transition to results page");
         });
-
-        initializeMap();
 
         // Listen to drawers coming into the drawing room and start the game when everybody is in the drawing room
         fb.child('drawers').on('child_added', function(snapshot) {
           numDrawersReady++;
           if (numDrawersReady == localStorage.numDrawers) {
+            alert("Start guessing!!!");
             document.getElementById('waiting-msg').style.display = 'none';
             document.getElementById('timer').style.display = 'block';
             timer.countdown();
           }
         });
+
+        // Initialize the map and set up event listeners
+        initializeCanvasMap(fb, "canvas-map");
       });
     </script>
   </body>

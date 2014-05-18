@@ -14,7 +14,6 @@ function initializeDrawing() {
   });
 }
 
-var username = localStorage.username;
 var calibrate = 0;
 var positionOptions = {
   maximumAge: 5000
@@ -32,7 +31,7 @@ function setLocation(position) {
     if (calibrate % NUM_POINTS == 0) {
       var calibratedPos = calibratedLoc();
       calibrateCoords.push(calibratedPos);
-      coordsDB.push({'name':username, 'lat':calibratedPos.lat(), 'lng':calibratedPos.lng()});
+      coordsDB.push({'name':localStorage.username, 'lat':calibratedPos.lat(), 'lng':calibratedPos.lng()});
     }
   //}
   lastLocation = pos;
